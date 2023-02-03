@@ -72,3 +72,8 @@ Plugins/*/Intermediate/*
 
 # Cache files for the editor to use
 DerivedDataCache/*
+Jubokko/Intermediate
+Jubokko/Saved
+Jubokko/Saved/Logs
+Jubokko/Saved
+Jubokko/Intermediate
