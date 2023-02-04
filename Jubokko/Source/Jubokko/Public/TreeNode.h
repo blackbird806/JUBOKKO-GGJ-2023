@@ -31,10 +31,14 @@ public:
 
 	FTimerHandle KillTimer;
 
+	UPROPERTY(BlueprintReadWrite)
+	AActor* PipeMesh;
 
 	// Sets default values for this actor's properties
 	ATreeNode();
-	void Init(ATree* inTree, ATreeNode* inPrev, FVector2D Pos2, FVector Pos);
+	void Init(ATree* inTree, ATreeNode* inPrev, FVector Pos);
+
+	void UpdateMesh();
 
 	bool IsRoot() const;
 	void Kill();
