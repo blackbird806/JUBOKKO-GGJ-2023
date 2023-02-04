@@ -35,7 +35,7 @@ public:
 	AActor* RootSpawnPosition;
 
 	UPROPERTY(EditAnywhere)
-	UStaticMesh* PipeMesh;
+	TArray<UStaticMesh*> PipeMeshs;
 
 	UPROPERTY(EditAnywhere)
 	UStaticMesh* NodeMesh;
