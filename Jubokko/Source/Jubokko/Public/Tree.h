@@ -38,7 +38,7 @@ public:
 	TArray<UStaticMesh*> PipeMeshs;
 
 	UPROPERTY(EditAnywhere)
-	UStaticMesh* NodeMesh;
+	TArray<UStaticMesh*> NodeMeshs;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float ProjectionLength =100.f;

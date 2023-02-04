@@ -41,7 +41,7 @@ void ATreeNode::Init(ATree* inTree, ATreeNode* inPrev, FVector Pos)
 	auto* NodeMesh = GetWorld()->SpawnActor<ATreeRootNode>();
 	auto* ActorComp = NodeMesh->AddComponentByClass(UStaticMeshComponent::StaticClass(), false, FTransform{}, false);
 	UStaticMeshComponent* MeshComp = Cast<UStaticMeshComponent>(ActorComp);
-	MeshComp->SetStaticMesh(Tree->NodeMesh);
+	MeshComp->SetStaticMesh(Tree->NodeMeshs[FMath::RandRange(0, Tree->NodeMeshs.Num() - 1)]);
 	NodeMesh->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 	NodeMesh->SetActorHiddenInGame(false);
 	NodeMesh->SetActorScale3D(FVector(0.01f, 0.01f, 0.01f));
@@ -56,7 +56,6 @@ void ATreeNode::Init(ATree* inTree, ATreeNode* inPrev, FVector Pos)
 		ActorPipeComp->SetStaticMesh(Tree->PipeMeshs[FMath::RandRange(0, Tree->PipeMeshs.Num() - 1)]);
 		PipeMesh->SetActorHiddenInGame(false);
 
-		//ActorPipeComp = Cast<UStaticMeshComponent>(PipeMesh->AddComponentByClass(UStaticMeshComponent::StaticClass(), false, FTransform{}, false));
 		UpdateMesh();
 	}
 
@@ -69,7 +68,6 @@ void ATreeNode::UpdateMesh()
 	auto const PipeLoc = (Prev->GetActorLocation() + ((GetActorLocation() - Prev->GetActorLocation()) / 2));
 	PipeMesh->SetActorLocation(PipeLoc);
 	PipeMesh->SetActorRotation((GetActorLocation() - Prev->GetActorLocation()).Rotation());
-	//PipeMesh->AddActorLocalRotation(FRotator(90.0, 90.0, 90.0));
 
 	Distance = FVector::Dist(Prev->GetActorLocation(), GetActorLocation());
 }
