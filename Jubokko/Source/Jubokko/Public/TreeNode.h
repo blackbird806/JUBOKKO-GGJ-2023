@@ -34,7 +34,7 @@ public:
 
 	// Sets default values for this actor's properties
 	ATreeNode();
-	void Init(ATree* inTree, ATreeNode* inPrev, FVector2D Pos);
+	void Init(ATree* inTree, ATreeNode* inPrev, FVector2D Pos2, FVector Pos);
 
 	bool IsRoot() const;
 	void Kill();

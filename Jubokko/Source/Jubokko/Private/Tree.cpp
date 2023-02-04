@@ -12,10 +12,13 @@ ATree::ATree()
 void ATree::BeginPlay()
 {
 	Super::BeginPlay();
-	InputComponent->BindAction("MouseLeft", IE_Pressed, this, &ATree::MousePress);
-	InputComponent->BindAction("MouseLeft", IE_Released, this, &ATree::MouseRelease);
+	GetWorld()->GetFirstPlayerController()->SetControlRotation(FRotator());
 	Last = GetWorld()->SpawnActor<ATreeNode>();
-	Last->Init(this, nullptr, FVector2D{800, 500});
+	FVector2D ScreenLoation;
+	if (GetWorld()->GetFirstPlayerController()->ProjectWorldLocationToScreen(RootSpawnPosition->GetActorLocation(), ScreenLoation))
+	{
+	}
+	Last->Init(this, nullptr, ScreenLoation, RootSpawnPosition->GetActorLocation());
 }
 
 // Called every frame
@@ -30,8 +33,20 @@ void ATree::Tick(float DeltaTime)
 		if (Timer > TimeInterval)
 		{
 			Timer = 0.0f;
+
 			ATreeNode* Node = GetWorld()->SpawnActor<ATreeNode>();
-			Node->Init(this, Last, MousePos);
+			FVector WorldLocation;
+			FVector WorldDirection;
+			if (GetWorld()->GetFirstPlayerController()->DeprojectScreenPositionToWorld(MousePos.X, MousePos.Y, WorldLocation, WorldDirection))
+			{
+				FHitResult Hinfo;
+				WorldLocation += WorldDirection * ProjectionLength;
+				if (GetWorld()->LineTraceSingleByChannel(Hinfo, Last->GetActorLocation(), WorldLocation, ECC_Visibility))
+				{
+					WorldLocation = Hinfo.ImpactPoint;
+				}
+			}
+			Node->Init(this, Last, MousePos, WorldLocation);
 			Last = Node;
 		}
 	}
@@ -42,7 +57,7 @@ void ATree::MousePress()
 	float MinDist = FLT_MAX;
 	for (ATreeNode* Node : Nodes)
 	{
-		float const Dist = FVector2D::DistSquared(Node->Pos2D, MousePos);
+		float const Dist = FVector2D::Distance(Node->Pos2D, MousePos);
 		if (Dist < SelectionRange && Dist < MinDist)
 		{
 			bIsMouseLeftPressed = true;
@@ -55,4 +70,11 @@ void ATree::MousePress()
 void ATree::MouseRelease()
 {
 	bIsMouseLeftPressed = false;
+}
+
+void ATree::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	PlayerInputComponent->BindAction("MouseLeft", IE_Pressed, this, &ATree::MousePress);
+	PlayerInputComponent->BindAction("MouseLeft", IE_Released, this, &ATree::MouseRelease);
 }

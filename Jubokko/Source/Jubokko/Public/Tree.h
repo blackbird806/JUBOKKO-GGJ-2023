@@ -7,7 +7,7 @@
 #include "Tree.generated.h"
 
 UCLASS()
-class JUBOKKO_API ATree : public APlayerController
+class JUBOKKO_API ATree : public APawn
 {
 	GENERATED_BODY()
 
@@ -19,11 +19,17 @@ public:
 	float Timer = 0;
 
 	UPROPERTY(EditAnywhere)
-		UStaticMesh* PipeMesh;
+	AActor* RootSpawnPosition;
+
+	UPROPERTY(EditAnywhere)
+	UStaticMesh* PipeMesh;
 
 	UPROPERTY(EditAnywhere)
 	UStaticMesh* NodeMesh;
-	
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float ProjectionLength =100.f;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float TimeInterval = 0.3f;
 
@@ -41,5 +47,6 @@ public:
 	void MoveY(float Vec);
 	void MousePress();
 	void MouseRelease();
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 };
