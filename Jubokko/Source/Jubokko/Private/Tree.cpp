@@ -2,6 +2,7 @@
 
 #include "TreeNode.h"
 #include "Engine/World.h"
+#include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
 
 ATree::ATree()
@@ -27,7 +28,12 @@ FVector ATree::GetNodeLocationFromMouse(ATreeNode* Connected)
 		WorldLocation = FMath::LinePlaneIntersection(WorldLocation, WorldLocation + WorldDirection * 100000.0f, FPlane(FVector(1.0f, 0.0f, 0.0f), RootSpawnPosition->GetActorLocation().X));
 		if (GetWorld()->LineTraceSingleByChannel(Hinfo, Connected->GetActorLocation(), WorldLocation, ECC_WorldStatic))
 		{
-			if (!Hinfo.GetActor()->IsA(ATreeRootNode::StaticClass()))
+			AActor* HitActor = Hinfo.GetActor();
+			if (HitActor->IsA(ACharacter::StaticClass()))
+			{
+				OnKillNPC(HitActor);
+			}
+			else if (!HitActor->IsA(ATreeRootNode::StaticClass()))
 			{
 				WorldLocation = Hinfo.ImpactPoint;
 			}

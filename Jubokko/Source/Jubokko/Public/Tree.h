@@ -63,4 +63,6 @@ public:
 	void MouseRelease();
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnKillNPC(AActor* Actor);
 };
