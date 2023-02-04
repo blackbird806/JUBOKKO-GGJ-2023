@@ -28,13 +28,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float BloodGain;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int NbKills;
+
 	TArray<class ATreeNode*> Nodes;
 	ATreeNode* Last = nullptr;
 	FVector2D MousePos;
 	bool bIsMouseLeftPressed = false;
 	float Timer = 0;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	AActor* RootSpawnPosition;
 
 	UPROPERTY(EditAnywhere)
