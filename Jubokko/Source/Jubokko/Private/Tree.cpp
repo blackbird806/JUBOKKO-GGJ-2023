@@ -1,6 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Tree.h"
 
 #include "TreeNode.h"
@@ -18,7 +15,9 @@ void ATree::BeginPlay()
 	InputComponent->BindAction("MouseLeft", IE_Pressed, this, &ATree::MousePress);
 	InputComponent->BindAction("MouseLeft", IE_Released, this, &ATree::MouseRelease);
 	Last = GetWorld()->SpawnActor<ATreeNode>();
-	Last->Init(this, Last, FVector2D{10, 10});
+	Spline = FindComponentByClass<USplineComponent>();
+	check(Spline);
+	Last->Init(this, nullptr, FVector2D{800, 500});
 }
 
 // Called every frame
@@ -34,7 +33,7 @@ void ATree::Tick(float DeltaTime)
 		{
 			Timer = 0.0f;
 			ATreeNode* Node = GetWorld()->SpawnActor<ATreeNode>();
-			Node->Init(this, Node, MousePos);
+			Node->Init(this, Last, MousePos);
 			Last = Node;
 		}
 	}

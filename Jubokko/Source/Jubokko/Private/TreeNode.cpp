@@ -2,6 +2,7 @@
 #include "DrawDebugHelpers.h"
 #include "GameFramework/PlayerController.h"
 #include "Engine/Engine.h"
+#include "UObject/ConstructorHelpers.h"
 
 // Sets default values
 ATreeNode::ATreeNode()
@@ -14,18 +15,57 @@ ATreeNode::ATreeNode()
 void ATreeNode::Init(ATree* inTree, ATreeNode* inPrev, FVector2D Pos)
 {
 	check(inTree);
-	check(inPrev);
 	Tree = inTree;
 	Prev = inPrev;
 	bIsdead = false;
 	Pos2D = Pos;
 
+	RootComponent = NewObject<USceneComponent>(this);
+
+	FVector WorldLocation;
+	FVector WorldDirection;
+	if (Tree->DeprojectScreenPositionToWorld(Pos2D.X, Pos2D.Y, WorldLocation, WorldDirection))
+	{
+		SetActorLocation(WorldLocation);
+	}
+
 	Tree->Nodes.Add(this);
-	Prev->Next.Add(this);
+	FSplinePoint pt{};
+	static float inputkey = 1.0f;
+	inputkey += 0.2f;
+	pt.InputKey = inputkey;
+	pt.Position = GetActorLocation();
+	Tree->Spline->AddPoint(pt);
+	if (!IsRoot())
+	{
+		Prev->Next.Add(this);
+		SplineMesh = NewObject<USplineMeshComponent>(this);
+		ensure(SplineMesh);
+		SplineMesh->SetStaticMesh(Tree->SplineMesh);
+		SplineMesh->SetStartScale(FVector2D(0.1, 0.1));
+		SplineMesh->SetEndScale(FVector2D(0.1, 0.1));
+		SplineMesh->SplineParams.StartPos = Prev->GetActorLocation();
+		SplineMesh->SplineParams.StartTangent = /*Tree->Tangent1;  //*/Tree->Spline->GetTangentAtSplinePoint(Tree->Spline->GetNumberOfSplinePoints() - 1, ESplineCoordinateSpace::Local);
+		SplineMesh->SplineParams.EndPos = GetActorLocation();
+		SplineMesh->SplineParams.EndTangent = /*Tree->Tangent2; //*/ Tree->Spline->GetTangentAtSplinePoint(Tree->Spline->GetNumberOfSplinePoints(), ESplineCoordinateSpace::Local);
+		SplineMesh->RegisterComponentWithWorld(GetWorld());
+		SplineMesh->CreationMethod = EComponentCreationMethod::UserConstructionScript;
+		SplineMesh->SetMobility(EComponentMobility::Movable);
+		SplineMesh->SetForwardAxis(ESplineMeshAxis::Y);
 
-	Distance = FVector::Dist(Prev->GetActorLocation(), GetActorLocation());
+		SplineMesh->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+		Distance = FVector::Dist(Prev->GetActorLocation(), GetActorLocation());
+
+		FVector Tangent = (Prev->GetActorLocation() - GetActorLocation());
+		Tangent.Normalize();
+		if (!Prev->IsRoot())
+		{
+			Prev->SplineMesh->SetStartTangent(Tangent);
+		}
+		//SplineMesh->SetEndTangent(Tangent);
+	}
+
 	// call vfx
-
 }
 
 bool ATreeNode::IsRoot() const
@@ -71,12 +111,10 @@ void ATreeNode::Tick(float DeltaTime)
 	int32 ViewportSizeX, ViewportSizeY;
 	PlayerController->GetViewportSize(ViewportSizeX, ViewportSizeY);
 
-	FVector WorldLocation;
-	FVector WorldDirection;
-
-	if (PlayerController->DeprojectScreenPositionToWorld(Pos2D.X, Pos2D.Y, WorldLocation, WorldDirection))
+	DrawDebugPoint(GetWorld(), GetActorLocation(), 5.0, FColor::Blue);
+	if (!IsRoot())
 	{
-		DrawDebugPoint(GetWorld(), WorldLocation, 5.0, FColor::Blue);
+		//SplineMesh->SplineParams.EndPos = GetActorLocation();
 	}
 }
 
