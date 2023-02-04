@@ -30,8 +30,6 @@ public:
 	static constexpr float KillLatency = 0.2f;
 
 	FTimerHandle KillTimer;
-	UPROPERTY(EditAnywhere)
-	USplineMeshComponent* SplineMesh;
 
 
 	// Sets default values for this actor's properties

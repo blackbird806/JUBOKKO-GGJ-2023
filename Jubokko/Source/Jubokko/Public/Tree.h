@@ -18,14 +18,12 @@ public:
 	bool bIsMouseLeftPressed = false;
 	float Timer = 0;
 
-	USplineComponent* Spline;
+	UPROPERTY(EditAnywhere)
+		UStaticMesh* PipeMesh;
 
 	UPROPERTY(EditAnywhere)
-	UStaticMesh* SplineMesh;
-	UPROPERTY(EditAnywhere)
-		FVector Tangent1;
-	UPROPERTY(EditAnywhere)
-		FVector Tangent2;
+	UStaticMesh* NodeMesh;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float TimeInterval = 0.3f;
 

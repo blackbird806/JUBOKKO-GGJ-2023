@@ -15,8 +15,6 @@ void ATree::BeginPlay()
 	InputComponent->BindAction("MouseLeft", IE_Pressed, this, &ATree::MousePress);
 	InputComponent->BindAction("MouseLeft", IE_Released, this, &ATree::MouseRelease);
 	Last = GetWorld()->SpawnActor<ATreeNode>();
-	Spline = FindComponentByClass<USplineComponent>();
-	check(Spline);
 	Last->Init(this, nullptr, FVector2D{800, 500});
 }
 
