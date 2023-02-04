@@ -25,6 +25,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float BloodLost;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BloodGain;
+
 	TArray<class ATreeNode*> Nodes;
 	ATreeNode* Last = nullptr;
 	FVector2D MousePos;
