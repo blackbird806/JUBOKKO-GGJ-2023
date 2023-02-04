@@ -7,11 +7,24 @@
 #include "Tree.generated.h"
 
 UCLASS()
+class ATreeRootNode : public AActor
+{
+	GENERATED_BODY()
+};
+
+UCLASS()
 class JUBOKKO_API ATree : public APawn
 {
 	GENERATED_BODY()
 
 public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BloodAmount;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BloodLost;
+
 	TArray<class ATreeNode*> Nodes;
 	ATreeNode* Last = nullptr;
 	FVector2D MousePos;
@@ -41,7 +54,8 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-public:	
+public:
+	FVector GetNodeLocationFromMouse(ATreeNode* Connected);
 	virtual void Tick(float DeltaTime) override;
 	void MoveX(float Vec);
 	void MoveY(float Vec);

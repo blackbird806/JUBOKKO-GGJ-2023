@@ -17,6 +17,25 @@ void ATree::BeginPlay()
 	Root->Init(this, nullptr, RootSpawnPosition->GetActorLocation());
 }
 
+FVector ATree::GetNodeLocationFromMouse(ATreeNode* Connected)
+{
+	FVector WorldLocation;
+	FVector WorldDirection;
+	if (GetWorld()->GetFirstPlayerController()->DeprojectScreenPositionToWorld(MousePos.X, MousePos.Y, WorldLocation, WorldDirection))
+	{
+		FHitResult Hinfo;
+		WorldLocation = FMath::LinePlaneIntersection(WorldLocation, WorldLocation + WorldDirection * 100000.0f, FPlane(FVector(1.0f, 0.0f, 0.0f), RootSpawnPosition->GetActorLocation().X));
+		if (GetWorld()->LineTraceSingleByChannel(Hinfo, Connected->GetActorLocation(), WorldLocation, ECC_WorldStatic))
+		{
+			if (!Hinfo.GetActor()->IsA(ATreeRootNode::StaticClass()))
+			{
+				WorldLocation = Hinfo.ImpactPoint;
+			}
+		}
+	}
+	return WorldLocation;
+}
+
 void ATree::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -34,24 +53,14 @@ void ATree::Tick(float DeltaTime)
 			Last = Node;
 		}
 
-		FVector WorldLocation;
-		FVector WorldDirection;
-		if (GetWorld()->GetFirstPlayerController()->DeprojectScreenPositionToWorld(MousePos.X, MousePos.Y, WorldLocation, WorldDirection))
-		{
-			FHitResult Hinfo;
-			WorldLocation = FMath::LinePlaneIntersection(WorldLocation, WorldLocation + WorldDirection * 100000.0f, FPlane(FVector(1.0f, 0.0f, 0.0f), RootSpawnPosition->GetActorLocation().X));
-			if (GetWorld()->LineTraceSingleByChannel(Hinfo, Last->GetActorLocation(), WorldLocation, ECC_Visibility))
-			{
-				WorldLocation = Hinfo.ImpactPoint;
-			}
-		}
-		Last->SetActorLocation(WorldLocation);
+		Last->SetActorLocation(GetNodeLocationFromMouse(Last));
 		Last->UpdateMesh();
 	}
 	else
 	{
 		Timer = 0.0f;
 	}
+
 }
 
 void ATree::MousePress()
@@ -79,18 +88,7 @@ void ATree::MousePress()
 	{
 		bIsMouseLeftPressed = true;
 		Last = GetWorld()->SpawnActor<ATreeNode>();
-		FVector WorldLocation;
-		FVector WorldDirection;
-		if (GetWorld()->GetFirstPlayerController()->DeprojectScreenPositionToWorld(MousePos.X, MousePos.Y, WorldLocation, WorldDirection))
-		{
-			FHitResult Hinfo;
-			WorldLocation = FMath::LinePlaneIntersection(WorldLocation, WorldLocation + WorldDirection * 100000.0f, FPlane(FVector(1.0f, 0.0f, 0.0f), RootSpawnPosition->GetActorLocation().X));
-			if (GetWorld()->LineTraceSingleByChannel(Hinfo, Last->GetActorLocation(), WorldLocation, ECC_Visibility))
-			{
-				WorldLocation = Hinfo.ImpactPoint;
-			}
-			Last->Init(this, Closest, WorldLocation);
-		}
+		Last->Init(this, Closest, GetNodeLocationFromMouse(Closest));
 	}
 }
 

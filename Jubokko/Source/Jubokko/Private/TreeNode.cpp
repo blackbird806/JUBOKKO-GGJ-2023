@@ -20,6 +20,13 @@ void ATreeNode::Init(ATree* inTree, ATreeNode* inPrev, FVector Pos)
 	Prev = inPrev;
 	bIsdead = false;
 
+	Tree->BloodAmount -= Tree->BloodLost;
+	GEngine->AddOnScreenDebugMessage(-1, 200, FColor::Green, FString::Printf(TEXT("BloodAmount %f"), Tree->BloodAmount));
+	if (Tree->BloodAmount <= 0)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 200, FColor::Red, TEXT("GameOver"));
+	}
+
 	FVector2D ScreenLocation;
 	if (GetWorld()->GetFirstPlayerController()->ProjectWorldLocationToScreen(Pos, ScreenLocation))
 	{
@@ -31,7 +38,7 @@ void ATreeNode::Init(ATree* inTree, ATreeNode* inPrev, FVector Pos)
 
 	Tree->Nodes.Add(this);
 
-	auto* NodeMesh = GetWorld()->SpawnActor<AActor>();
+	auto* NodeMesh = GetWorld()->SpawnActor<ATreeRootNode>();
 	auto* ActorComp = NodeMesh->AddComponentByClass(UStaticMeshComponent::StaticClass(), false, FTransform{}, false);
 	UStaticMeshComponent* MeshComp = Cast<UStaticMeshComponent>(ActorComp);
 	MeshComp->SetStaticMesh(Tree->NodeMesh);
@@ -43,7 +50,7 @@ void ATreeNode::Init(ATree* inTree, ATreeNode* inPrev, FVector Pos)
 	if (!IsRoot())
 	{
 		Prev->Next.Add(this);
-		PipeMesh = GetWorld()->SpawnActor<AActor>();
+		PipeMesh = GetWorld()->SpawnActor<ATreeRootNode>();
 		PipeMesh->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 		auto* ActorPipeComp = Cast<UStaticMeshComponent>(PipeMesh->AddComponentByClass(UStaticMeshComponent::StaticClass(), false, FTransform{}, false));
 		ActorPipeComp->SetStaticMesh(Tree->PipeMesh);
