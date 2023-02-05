@@ -24,12 +24,19 @@ public:
 	bool bIsdead;
 	UPROPERTY(BlueprintReadWrite)
 	float Distance;
+	UPROPERTY(BlueprintReadWrite)
+	int Floor;
+	UPROPERTY(BlueprintReadWrite)
+	int Life = 3;
 
 	FVector2D Pos2D;
 
 	static constexpr float KillLatency = 0.2f;
 
 	FTimerHandle KillTimer;
+
+	UPROPERTY(BlueprintReadWrite)
+	AActor* NodeMesh;
 
 	UPROPERTY(BlueprintReadWrite)
 	AActor* PipeMesh;
@@ -42,6 +49,7 @@ public:
 
 	bool IsRoot() const;
 	void Kill();
+	void Kill2();
 	void KillVisuals();
 
 protected:

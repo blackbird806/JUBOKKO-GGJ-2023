@@ -110,3 +110,15 @@ void ATree::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAction("MouseLeft", IE_Pressed, this, &ATree::MousePress);
 	PlayerInputComponent->BindAction("MouseLeft", IE_Released, this, &ATree::MouseRelease);
 }
+
+ATreeNode* ATree::IsANodeInThisFloor(int inFloor)
+{
+	for (ATreeNode* Cur : Nodes)
+	{
+		if (Cur->Floor == inFloor)
+		{
+			return Cur;
+		}
+	}
+	return nullptr;
+}

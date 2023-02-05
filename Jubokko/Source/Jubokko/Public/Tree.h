@@ -71,4 +71,7 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnKillNPC(AActor* Actor);
+
+	UFUNCTION(BlueprintCallable)
+	ATreeNode* IsANodeInThisFloor(int inFloor);
 };

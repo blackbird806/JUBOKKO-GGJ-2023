@@ -38,7 +38,7 @@ void ATreeNode::Init(ATree* inTree, ATreeNode* inPrev, FVector Pos)
 
 	Tree->Nodes.Add(this);
 
-	auto* NodeMesh = GetWorld()->SpawnActor<ATreeRootNode>();
+	NodeMesh = GetWorld()->SpawnActor<ATreeRootNode>();
 	auto* ActorComp = NodeMesh->AddComponentByClass(UStaticMeshComponent::StaticClass(), false, FTransform{}, false);
 	UStaticMeshComponent* MeshComp = Cast<UStaticMeshComponent>(ActorComp);
 	MeshComp->SetStaticMesh(Tree->NodeMeshs[FMath::RandRange(0, Tree->NodeMeshs.Num() - 1)]);
@@ -57,6 +57,22 @@ void ATreeNode::Init(ATree* inTree, ATreeNode* inPrev, FVector Pos)
 		PipeMesh->SetActorHiddenInGame(false);
 
 		UpdateMesh();
+	}
+
+	if (GetActorLocation().Y > -650 && GetActorLocation().Y < -55)
+	{
+		float Z = GetActorLocation().Z;
+		Floor = (Z <= -420.0f ? 0 : (Z <= -160.0f ? 1 : (Z <= 180.0f ? 5 : (Z <= 500.0f ? 6 : 4))));
+	}
+	else if (GetActorLocation().Y > -55 && GetActorLocation().Y < 400)
+	{
+		float Z = GetActorLocation().Z;
+		Floor = (Z <= -420.0f ? 0 : (Z <= -160.0f ? 1 : (Z <= 180.0f ? 2 : (Z <= 500.0f ? 6 : 4))));
+	}
+	else if (GetActorLocation().Y > 400 && GetActorLocation().Y < 1150)
+	{
+		float Z = GetActorLocation().Z;
+		Floor = (Z <= -420.0f ? 0 : (Z <= -160.0f ? 1 : (Z <= 180.0f ? 2 : (Z <= 500.0f ? 3 : 4))));
 	}
 
 	// call vfx
@@ -80,12 +96,21 @@ bool ATreeNode::IsRoot() const
 void ATreeNode::Kill()
 {
 	bIsdead = true;
+	Prev->Next.Remove(this);
+	Kill2();
+}
 
+void ATreeNode::Kill2()
+{
+	bIsdead = true;
 	for (ATreeNode* Current : Next)
 	{
-		Current->Kill();
+		Current->Kill2();
 	}
-	KillVisuals();
+	Tree->Nodes.Remove(this);
+	NodeMesh->Destroy();
+	PipeMesh->Destroy();
+	Destroy();
 }
 
 void ATreeNode::KillVisuals()
@@ -110,11 +135,16 @@ void ATreeNode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
-
-	int32 ViewportSizeX, ViewportSizeY;
-	PlayerController->GetViewportSize(ViewportSizeX, ViewportSizeY);
+	//APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+	//
+	//int32 ViewportSizeX, ViewportSizeY;
+	//PlayerController->GetViewportSize(ViewportSizeX, ViewportSizeY);
 
 	//DrawDebugPoint(GetWorld(), GetActorLocation(), 5.0, FColor::Blue);
+
+	if (Life <= 0 && !bIsdead)
+	{
+		Kill();
+	}
 }
 
