@@ -21,7 +21,7 @@ void ATreeNode::Init(ATree* inTree, ATreeNode* inPrev, FVector Pos)
 	bIsdead = false;
 
 	Tree->BloodAmount -= Tree->BloodLost;
-	GEngine->AddOnScreenDebugMessage(-1, 200, FColor::Green, FString::Printf(TEXT("BloodAmount %f"), Tree->BloodAmount));
+	//GEngine->AddOnScreenDebugMessage(-1, 200, FColor::Green, FString::Printf(TEXT("BloodAmount %f"), Tree->BloodAmount));
 	if (Tree->BloodAmount <= 0)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 200, FColor::Red, TEXT("GameOver"));
