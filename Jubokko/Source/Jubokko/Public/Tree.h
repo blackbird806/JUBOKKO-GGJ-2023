@@ -55,6 +55,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float SelectionRange = 5.0f;
 
+
 	ATree();
 
 protected:

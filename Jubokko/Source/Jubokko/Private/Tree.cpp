@@ -2,6 +2,7 @@
 
 #include "TreeNode.h"
 #include "Engine/World.h"
+#include "EngineUtils.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -14,6 +15,7 @@ void ATree::BeginPlay()
 {
 	Super::BeginPlay();
 	GetWorld()->GetFirstPlayerController()->SetControlRotation(FRotator());
+
 	ATreeNode* Root = GetWorld()->SpawnActor<ATreeNode>();
 	Root->Init(this, nullptr, RootSpawnPosition->GetActorLocation());
 }
