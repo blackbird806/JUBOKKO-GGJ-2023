@@ -43,7 +43,6 @@ FVector ATree::GetNodeLocationFromMouse(ATreeNode* Connected)
 				WorldLocation = Hinfo.ImpactPoint;
 			}
 		}
-		DrawDebugLine(GetWorld(), Connected->GetActorLocation(), WorldLocation, FColor::Red, false, 5.0f);
 	}
 	else
 	{
