@@ -75,7 +75,6 @@ void ATreeNode::Init(ATree* inTree, ATreeNode* inPrev, FVector Pos)
 		Floor = (Z <= -420.0f ? 0 : (Z <= -160.0f ? 1 : (Z <= 180.0f ? 2 : (Z <= 500.0f ? 3 : 4))));
 	}
 
-	// call vfx
 }
 
 void ATreeNode::UpdateMesh()

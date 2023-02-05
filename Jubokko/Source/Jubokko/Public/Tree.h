@@ -39,6 +39,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<class ATreeNode*> Nodes;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ATreeNode* Last = nullptr;
 	FVector2D MousePos;
 	bool bIsMouseLeftPressed = false;
