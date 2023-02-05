@@ -44,7 +44,7 @@ void ATreeNode::Init(ATree* inTree, ATreeNode* inPrev, FVector Pos)
 	MeshComp->SetStaticMesh(Tree->NodeMeshs[FMath::RandRange(0, Tree->NodeMeshs.Num() - 1)]);
 	NodeMesh->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 	NodeMesh->SetActorHiddenInGame(false);
-	NodeMesh->SetActorScale3D(FVector(0.01f, 0.01f, 0.01f));
+	NodeMesh->SetActorScale3D(FVector(0.2f, 0.2f, 0.2f));
 	NodeMesh->SetActorLocation(Pos);
 
 	if (!IsRoot())
@@ -64,8 +64,8 @@ void ATreeNode::Init(ATree* inTree, ATreeNode* inPrev, FVector Pos)
 
 void ATreeNode::UpdateMesh()
 {
-	PipeMesh->SetActorScale3D(FVector(FVector::Dist(GetActorLocation(), Prev->GetActorLocation()) / 1000.0f, 0.005f, 0.005f));
-	auto const PipeLoc = (Prev->GetActorLocation() + ((GetActorLocation() - Prev->GetActorLocation()) / 2));
+	PipeMesh->SetActorScale3D(FVector(FVector::Dist(GetActorLocation(), Prev->GetActorLocation()) / 1000.0f, 0.1f, 0.1f));
+	auto const PipeLoc = (Prev->GetActorLocation() + ((GetActorLocation() - Prev->GetActorLocation()) / 2.0f));
 	PipeMesh->SetActorLocation(PipeLoc);
 	PipeMesh->SetActorRotation((GetActorLocation() - Prev->GetActorLocation()).Rotation());
 
@@ -115,6 +115,6 @@ void ATreeNode::Tick(float DeltaTime)
 	int32 ViewportSizeX, ViewportSizeY;
 	PlayerController->GetViewportSize(ViewportSizeX, ViewportSizeY);
 
-	DrawDebugPoint(GetWorld(), GetActorLocation(), 5.0, FColor::Blue);
+	//DrawDebugPoint(GetWorld(), GetActorLocation(), 5.0, FColor::Blue);
 }
 
