@@ -3,6 +3,7 @@
 #include "TreeNode.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
+#include "DrawDebugHelpers.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -14,10 +15,12 @@ ATree::ATree()
 void ATree::BeginPlay()
 {
 	Super::BeginPlay();
+	BloodAmount = BaseBloodAmount;
 	GetWorld()->GetFirstPlayerController()->SetControlRotation(FRotator());
 
 	ATreeNode* Root = GetWorld()->SpawnActor<ATreeNode>();
 	Root->Init(this, nullptr, RootSpawnPosition->GetActorLocation());
+	Cast<UStaticMeshComponent>(Root->NodeMesh->GetComponentByClass(UStaticMeshComponent::StaticClass()))->SetMaterial(0, RootMaterial);
 }
 
 FVector ATree::GetNodeLocationFromMouse(ATreeNode* Connected)
@@ -40,6 +43,11 @@ FVector ATree::GetNodeLocationFromMouse(ATreeNode* Connected)
 				WorldLocation = Hinfo.ImpactPoint;
 			}
 		}
+		DrawDebugLine(GetWorld(), Connected->GetActorLocation(), WorldLocation, FColor::Red, false, 5.0f);
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 200, FColor::Green, FString::Printf(TEXT("DeprojectScreenPositionToWorld failed")));
 	}
 	return WorldLocation;
 }

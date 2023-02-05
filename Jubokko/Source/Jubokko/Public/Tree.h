@@ -20,6 +20,9 @@ class JUBOKKO_API ATree : public APawn
 public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BaseBloodAmount;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float BloodAmount;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -31,6 +34,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int NbKills;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UMaterialInterface* RootMaterial;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<class ATreeNode*> Nodes;
 	ATreeNode* Last = nullptr;
 	FVector2D MousePos;
